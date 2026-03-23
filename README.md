@@ -83,6 +83,14 @@ This driver is optimized for the **Grove IMU 10DOF** module.
 
 ## Hardware Integration (STM32 Example)
 
+### 0. STM32CubeIDE Configuration
+Before writing the code, ensure your I2C peripheral is configured for high-speed communication using the STM32CubeIDE GUI (Device Configuration Tool):
+1. Open your `.ioc` file.
+2. Enable the I2C peripheral (e.g., `I2C1`).
+3. In the **Parameter Settings** tab, set **I2C Speed Mode** to **Fast Mode**.
+4. Set **I2C Clock Speed (Hz)** to **400000** (400 kHz).
+5. Generate the code.
+
 To use this driver, you must provide three "wrapper" functions that link the agnostic logic to your specific hardware (e.g., STM32 HAL).
 
 ### 1. Define Wrappers
