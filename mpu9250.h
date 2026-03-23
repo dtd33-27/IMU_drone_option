@@ -32,11 +32,14 @@ typedef struct {
 } sensor_data_t;
 
 typedef struct {
-    float roll;    /* Roulis (degres) */
-    float pitch;   /* Tangage (degres) */
-    float heading; /* Cap compense (degres) / Yaw */
+    float roll;    /* Roll (degrees) */
+    float pitch;   /* Pitch (degrees) */
+    float heading; /* Tilt-compensated heading (degrees) / Yaw */
 } attitude_t;
 
+/**
+ * @brief Main structure containing hardware interfaces, raw and computed data.
+ */
 typedef struct {
     /* Hardware I/O interfaces */
     uint8_t i2c_addr;
@@ -51,20 +54,52 @@ typedef struct {
     float mag_bias[3]; /* Hard-Iron calibration offsets */
 
     /* Processed Sensor Data */
-    sensor_data_t accel; /* Accelerations en g */
-    sensor_data_t gyro;  /* Vitesses angulaires en dps */
-    sensor_data_t mag;   /* Champ magnetique en uT */
-    float temp;          /* Temperature en Celsius */
+    sensor_data_t accel; /* Accelerations in g */
+    sensor_data_t gyro;  /* Angular velocities in dps */
+    sensor_data_t mag;   /* Magnetic field in uT */
+    float temp;          /* Temperature in Celsius */
 
     /* Computed Attitude */
-    attitude_t attitude; /* Angles d'Euler */
+    attitude_t attitude; /* Euler angles */
 } mpu9250_t;
 
 /* Prototypes */
+
+/**
+ * @brief  Initializes the MPU9250 and the internal AK8963 magnetometer.
+ * @param  dev Pointer to the MPU9250 sensor structure.
+ * @param  afs Full-scale range for the accelerometer.
+ * @param  gfs Full-scale range for the gyroscope.
+ * @return 0 on success, -1 on I2C communication error.
+ */
 int8_t mpu9250_init(mpu9250_t *dev, accel_fs_t afs, gyro_fs_t gfs);
+
+/**
+ * @brief  Reads raw accelerometer and gyroscope data, then applies resolutions.
+ * @param  dev Pointer to the MPU9250 sensor structure.
+ * @return 0 on success, -1 on I2C communication error.
+ */
 int8_t mpu9250_read_accel_gyro(mpu9250_t *dev);
+
+/**
+ * @brief  Reads AK8963 magnetometer data, aligns axes and subtracts bias (Hard-Iron).
+ * @param  dev Pointer to the MPU9250 sensor structure.
+ * @return 0 on success, -1 on I2C communication error.
+ */
 int8_t mpu9250_read_mag(mpu9250_t *dev);
+
+/**
+ * @brief  Calibrates the magnetometer by calculating Hard-Iron offsets. Blocking function.
+ * @param  dev Pointer to the MPU9250 sensor structure.
+ * @return None.
+ */
 void mpu9250_calibrate_mag(mpu9250_t *dev);
+
+/**
+ * @brief  Computes spatial attitude (Roll, Pitch) and tilt-compensated Heading (Yaw).
+ * @param  dev Pointer to the MPU9250 sensor structure.
+ * @return None.
+ */
 void mpu9250_compute_attitude(mpu9250_t *dev);
 
 #endif /* MPU9250_H */
