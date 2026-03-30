@@ -53,7 +53,7 @@ int8_t mpu9250_init(mpu9250_t *dev, accel_fs_t afs, gyro_fs_t gfs) {
         /* Gyro DLPF Config */
         data = 0x03;  // DLPF_CFG = 3 -> 41Hz gyro bandwidth
         dev->i2c_write(dev->i2c_addr, 0x1A, &data, 1);
-        /* Accel DDLPF Config */
+        /* Accel DLPF Config */
         data = 0x03;  // DLPF_CFG = 3 -> 44Hz accel bandwidth
         dev->i2c_write(dev->i2c_addr, 0x1D, &data, 1);
         /* Gyro FCHOICE */
