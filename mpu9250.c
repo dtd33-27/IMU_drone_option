@@ -50,11 +50,17 @@ int8_t mpu9250_init(mpu9250_t *dev, accel_fs_t afs, gyro_fs_t gfs) {
     dev->i2c_write(dev->i2c_addr, REG_ACCEL_CONFIG, &data, 1);
 
     /* 4. DLPF Config */
-    data = 0x03;                                    // DLPF_CFG = 3 -> 41Hz gyro bandwidth, 44Hz accel bandwidth
-    dev->i2c_write(dev->i2c_addr, 0x1B, &data, 1);	// Disable bypass
-    dev->i2c_write(dev->i2c_addr, 0x1A, &data, 1);	// Enable gyro filter
-    dev->i2c_write(dev->i2c_addr, 0x1D, &data, 1);	// Enable accel filter
-
+        /* Gyro DLPF Config */
+        data = 0x03;  // DLPF_CFG = 3 -> 41Hz gyro bandwidth
+        dev->i2c_write(dev->i2c_addr, 0x1A, &data, 1);
+        /* Accel DDLPF Config */
+        data = 0x03;  // DLPF_CFG = 3 -> 44Hz accel bandwidth
+        dev->i2c_write(dev->i2c_addr, 0x1D, &data, 1);
+        /* Gyro FCHOICE */
+        data = (uint8_t)gfs;
+        data |= 0x00; // DLPF Enable
+        dev->i2c_write(dev->i2c_addr, 0x1B, &data, 1);
+    
     /* 5. Enable Bypass */
     data = 0x02;
     dev->i2c_write(dev->i2c_addr, REG_INT_PIN_CFG, &data, 1);
