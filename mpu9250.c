@@ -55,12 +55,12 @@ int8_t mpu9250_init(mpu9250_t *dev, accel_fs_t afs, gyro_fs_t gfs) {
     dev->i2c_write(dev->i2c_addr, 0x1A, &data, 1);	// Enable gyro filter
     dev->i2c_write(dev->i2c_addr, 0x1D, &data, 1);	// Enable accel filter
 
-    /* 4. Enable Bypass */
+    /* 5. Enable Bypass */
     data = 0x02;
     dev->i2c_write(dev->i2c_addr, REG_INT_PIN_CFG, &data, 1);
     dev->delay_ms(10);
 
-    /* 5. AK8963 Config (100Hz) */
+    /* 6. AK8963 Config (100Hz) */
     data = 0x16;
     dev->i2c_write(AK8963_I2C_ADDR, REG_AK_CNTL1, &data, 1);
     dev->delay_ms(10);
